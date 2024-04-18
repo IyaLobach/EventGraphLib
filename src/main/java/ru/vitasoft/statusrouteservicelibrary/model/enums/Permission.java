@@ -1,7 +1,11 @@
 package ru.vitasoft.statusrouteservicelibrary.model.enums;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import ru.vitasoft.statusrouteservicelibrary.model.Edge;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,8 +24,7 @@ public class Permission {
     private Long id;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<Long> rolesId;
+    private List<Long> roles;
 
     private Boolean isOwner;
-
 }
