@@ -8,6 +8,7 @@ import lombok.*;
 import ru.vitasoft.statusrouteservicelibrary.model.Edge;
 
 import javax.persistence.*;
+import javax.persistence.metamodel.StaticMetamodel;
 import java.util.List;
 
 
@@ -17,6 +18,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "permission")
 public class Permission {
 
     @Id

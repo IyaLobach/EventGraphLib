@@ -4,14 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 import ru.vitasoft.statusrouteservicelibrary.exception.CustomBadRequestException;
 import ru.vitasoft.statusrouteservicelibrary.exception.CustomConflictException;
-import ru.vitasoft.statusrouteservicelibrary.model.Event;
+import ru.vitasoft.statusrouteservicelibrary.model.GraphEvent;
 import ru.vitasoft.statusrouteservicelibrary.model.enums.Permission;
 import ru.vitasoft.statusrouteservicelibrary.repository.EdgeRepository;
 import org.springframework.stereotype.Service;
 import ru.vitasoft.statusrouteservicelibrary.dto.EdgeWalkDto;
 import ru.vitasoft.statusrouteservicelibrary.dto.EventDto;
 import ru.vitasoft.statusrouteservicelibrary.model.Edge;
-import ru.vitasoft.statusrouteservicelibrary.services.event.EventRunnerService;
+import ru.vitasoft.statusrouteservicelibrary.services.event.GraphEventRunner;
 import ru.vitasoft.statusrouteservicelibrary.services.permission.PermissionCheckerService;
 
 import javax.validation.ConstraintViolation;
@@ -26,7 +26,7 @@ import java.util.Set;
 public class EdgeWalkerService implements EdgeWalker {
 
     private final EdgeRepository edgeRepository;
-    private final EventRunnerService eventRunnerService;
+    private final GraphEventRunner eventRunnerService;
     private final Validator validator;
     private PermissionCheckerService permissionChecker;
 
@@ -47,7 +47,9 @@ public class EdgeWalkerService implements EdgeWalker {
     @Transactional
     @Override
     public Edge saveEdge(Edge edge) {
+        checkEdgeUnique(edge);
         validate(edge);
+        edge.setEvents(edge.getEvents() == null ? Collections.emptyList() : edge.getEvents());
         return edgeRepository.save(edge);
     }
 
@@ -96,18 +98,18 @@ public class EdgeWalkerService implements EdgeWalker {
     }
 
     @Override
-    public Event findEventById(Long id) {
+    public GraphEvent findEventById(Long id) {
         return eventRunnerService.findById(id);
     }
 
     @Override
-    public List<Event> findAllEvents() {
+    public List<GraphEvent> findAllEvents() {
         return eventRunnerService.findAll();
     }
 
     @Override
     @Transactional
-    public Event saveEvent(Event event) {
+    public GraphEvent saveEvent(GraphEvent event) {
         validate(event);
         return eventRunnerService.save(event);
     }
@@ -119,6 +121,13 @@ public class EdgeWalkerService implements EdgeWalker {
             edge.removeEventFromEdge(findEventById(eventId));
         }
         eventRunnerService.deleteById(eventId);
+    }
+
+    @Override
+    public Edge addEvent(Long edgeId, GraphEvent graphEvent) {
+        Edge edge = edgeRepository.findEdgeById(edgeId).orElseThrow(() -> new CustomConflictException("Ребро с данным id не найдено"));
+        edge.getEvents().add(graphEvent);
+        return edge;
     }
 
     protected void runEvents(EventDto eventDto) {
@@ -138,6 +147,11 @@ public class EdgeWalkerService implements EdgeWalker {
             }
             throw new CustomBadRequestException(sb.toString());
         }
+    }
+
+    private void checkEdgeUnique(Edge edge) {
+        if (edgeRepository.findByStatusFromIdAndStatusToId(edge.getStatusFromId(), edge.getStatusToId()).isPresent())
+            throw new CustomConflictException("Edge с такими статусами уже существует");
     }
 
 }

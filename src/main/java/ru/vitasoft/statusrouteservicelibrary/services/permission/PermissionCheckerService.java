@@ -44,7 +44,7 @@ public abstract class PermissionCheckerService {
         }
     }
 
-    private boolean isHasRole(Permission permission, User currentUser) {
+    protected boolean isHasRole(Permission permission, User currentUser) {
         if (!permission.getRoles().isEmpty()) {
             boolean hasRole = permission.getRoles().stream().anyMatch(roleId -> hasAuthority(currentUser, roleId));
             if (!hasRole)
@@ -53,7 +53,7 @@ public abstract class PermissionCheckerService {
         return true;
     }
 
-    private boolean isOwner(Permission permission, User currentUser, User ownerUser) {
+    protected boolean isOwner(Permission permission, User currentUser, User ownerUser) {
         if (permission.getIsOwner() && (!Objects.equals(ownerUser, currentUser)))
             return false;
         return true;
@@ -68,11 +68,11 @@ public abstract class PermissionCheckerService {
 
     @Transactional
     public Permission save(Permission permission) {
-        return permissionRepository.save(permission);
+        return (Permission) permissionRepository.save(permission);
     }
 
     public Permission findById(Long id) {
-        return permissionRepository.findById(id).orElse(null);
+        return (Permission) permissionRepository.findById(id).orElse(null);
     }
 
 

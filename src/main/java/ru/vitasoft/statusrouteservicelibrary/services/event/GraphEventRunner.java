@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.vitasoft.statusrouteservicelibrary.dto.EventDto;
 import ru.vitasoft.statusrouteservicelibrary.exception.CustomConflictException;
 import ru.vitasoft.statusrouteservicelibrary.exception.CustomInternalServerErrorException;
-import ru.vitasoft.statusrouteservicelibrary.model.Event;
-import ru.vitasoft.statusrouteservicelibrary.repository.EventRepository;
+import ru.vitasoft.statusrouteservicelibrary.model.GraphEvent;
+import ru.vitasoft.statusrouteservicelibrary.repository.GraphEventRepository;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -17,14 +17,14 @@ import java.util.Map;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class EventRunnerService {
+public class GraphEventRunner {
 
-    private final EventRepository eventRepository;
+    private final GraphEventRepository eventRepository;
     private final ConfigurableApplicationContext context;
 
 
     public void runEvents(EventDto eventDto) {
-        for (Event event : eventDto.getEventsId()) {
+        for (GraphEvent event : eventDto.getEventsId()) {
             Object bean = context.getBean(event.getBeanName());
             String beanMethodName = event.getBeanMethod();
             try {
@@ -36,16 +36,16 @@ public class EventRunnerService {
         }
     }
 
-    public Event findById(Long id) {
+    public GraphEvent findById(Long id) {
         return eventRepository.findById(id).orElseThrow(() -> new CustomConflictException("Не найдено событие для заданного id"));
     }
 
     @Transactional
-    public Event save(Event event) {
+    public GraphEvent save(GraphEvent event) {
         return eventRepository.save(event);
     }
 
-    public List<Event> findAll() {
+    public List<GraphEvent> findAll() {
         return eventRepository.findAll();
     }
 

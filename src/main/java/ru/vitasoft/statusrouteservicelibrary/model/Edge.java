@@ -1,6 +1,5 @@
 package ru.vitasoft.statusrouteservicelibrary.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import ru.vitasoft.statusrouteservicelibrary.model.enums.Permission;
 
@@ -37,13 +36,13 @@ public class Edge {
 
     @ManyToMany
     @JoinTable(
-            name = "edge_event",
+            name = "edge_graphevent",
             joinColumns = @JoinColumn(name = "edge_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id")
     )
-    private List<Event> events;
+    private List<GraphEvent> events;
 
-    public void removeEventFromEdge(Event event) {
+    public void removeEventFromEdge(GraphEvent event) {
         events.remove(event);
     }
 

@@ -3,7 +3,7 @@ package ru.vitasoft.statusrouteservicelibrary.services.edge;
 
 import ru.vitasoft.statusrouteservicelibrary.dto.EdgeWalkDto;
 import ru.vitasoft.statusrouteservicelibrary.model.Edge;
-import ru.vitasoft.statusrouteservicelibrary.model.Event;
+import ru.vitasoft.statusrouteservicelibrary.model.GraphEvent;
 import ru.vitasoft.statusrouteservicelibrary.model.enums.Permission;
 
 import java.util.List;
@@ -27,12 +27,14 @@ public interface EdgeWalker {
     List<Permission> findAllPermissions();
     void deletePermissionById(Long permissionId);
 
-    Event findEventById(Long id);
+    GraphEvent findEventById(Long id);
 
-    List<Event> findAllEvents();
+    List<GraphEvent> findAllEvents();
 
-    Event saveEvent(Event event);
+    GraphEvent saveEvent(GraphEvent event);
 
     void deleteEventById(Long eventId);
+
+    Edge addEvent(Long edgeId, GraphEvent graphEvent);
 
 }
