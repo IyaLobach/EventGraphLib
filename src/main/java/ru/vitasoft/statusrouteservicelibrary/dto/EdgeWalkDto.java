@@ -5,13 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import ru.vitasoft.statusrouteservicelibrary.model.security.User;
 
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class EdgeWalkDto {

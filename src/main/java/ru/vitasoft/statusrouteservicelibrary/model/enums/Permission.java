@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import ru.vitasoft.statusrouteservicelibrary.model.Edge;
 
 import javax.persistence.*;
@@ -15,7 +16,7 @@ import java.util.List;
 @Entity
 @Data
 @EqualsAndHashCode
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "permission")
